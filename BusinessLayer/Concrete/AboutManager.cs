@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Abstract;
 using DataAccessLayer.Abstract;
 using EntityLayer.Concrete;
+using System.Linq.Expressions;
 
 namespace BusinessLayer.Concrete
 {
@@ -11,6 +12,11 @@ namespace BusinessLayer.Concrete
         public AboutManager(IAboutDal aboutDal)
         {
             _aboutDal = aboutDal;
+        }
+
+        public List<About> GetByFilter(Expression<Func<About, bool>> filter)
+        {
+            throw new NotImplementedException();
         }
 
         public void TAdd(About t)
