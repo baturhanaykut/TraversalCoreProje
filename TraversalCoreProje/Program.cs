@@ -1,8 +1,5 @@
-using BusinessLayer.Abstract;
-using BusinessLayer.Concrete;
-using DataAccessLayer.Abstract;
+using BusinessLayer.Container;
 using DataAccessLayer.Concrete;
-using DataAccessLayer.EntityFramework;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -13,17 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//Loglama Ýþlemei yapýldý.
+builder.Services.AddLogging(x =>
+{
+    x.ClearProviders();
+    x.SetMinimumLevel(LogLevel.Debug);
+    x.AddDebug();
+});
+
 builder.Services.AddDbContext<Context>();
 builder.Services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<Context>().AddErrorDescriber<CustomIdentityValidator>();
 
-builder.Services.AddScoped<ICommentService, CommentManager>();
-builder.Services.AddScoped<ICommentDal, EfCommentDal>();
 
-builder.Services.AddScoped<IDestinationService, DestinationManager>();
-builder.Services.AddScoped<IDestinationDal, EfDestinationDal>();
-
-builder.Services.AddScoped<IAppUserServices, AppUserManager>();
-builder.Services.AddScoped<IAppUserDal, EfAppUserDal>();
+builder.Services.ContainerDependices();
 
 builder.Services.AddMvc(config =>
 {
@@ -44,6 +43,14 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+//Loglama Ýþlemi yapýldý.
+var loggerFactory = app.Services.GetService<ILoggerFactory>();
+var path = Directory.GetCurrentDirectory();
+loggerFactory.AddFile($"{path}\\Logs\\Log1.txt");
+
+//Error sayfasýný göstermek için yapýldý.
+app.UseStatusCodePagesWithReExecute("/ErrorPage/Error404", "?code={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
