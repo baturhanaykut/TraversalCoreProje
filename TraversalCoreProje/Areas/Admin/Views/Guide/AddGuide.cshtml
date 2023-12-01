@@ -10,26 +10,31 @@
     <div class="form-group">
         @Html.Label("Ad Soyad")
         <input type="text" asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         @Html.Label("Rehber Fotograf")
         <input type="text" asp-for="Image" class="form-control" />
+        <span asp-validation-for="Image" class="text-danger"></span>
     </div>
     <br />
     <div class="form-group">
         @Html.Label("Instagram Sayfası")
         <input type="text" asp-for="InstagramUrl" class="form-control" />
+       
     </div>
     <br />
     <div class="form-group">
         @Html.Label("Twitter Sayfası")
         <input type="text" asp-for="TwitterUrl" class="form-control" />
+     
     </div>
     <br />
     <div class="form-group">
         @Html.Label("Açıklama")
         <textarea cols="30" rows="5" type="text" asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <br />
     
