@@ -11,7 +11,7 @@ namespace BusinessLayer.Concrete
 {
     public class AppUserManager : IAppUserServices
     {
-        IAppUserDal _appUserDal;
+        private readonly IAppUserDal _appUserDal;
 
         public AppUserManager(IAppUserDal appUserDal)
         {

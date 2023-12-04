@@ -1,6 +1,8 @@
 using BusinessLayer.Container;
+using BusinessLayer.ValidationRules;
 using DataAccessLayer.Concrete;
 using EntityLayer.Concrete;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using TraversalCoreProje.Models;
@@ -8,7 +10,8 @@ using TraversalCoreProje.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddFluentValidation();
+
 
 //Loglama Ýþlemei yapýldý.
 builder.Services.AddLogging(x =>
@@ -22,7 +25,12 @@ builder.Services.AddDbContext<Context>();
 builder.Services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<Context>().AddErrorDescriber<CustomIdentityValidator>();
 
 
+
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.ContainerDependices();
+builder.Services.CustomValidator();
+
 
 builder.Services.AddMvc(config =>
 {

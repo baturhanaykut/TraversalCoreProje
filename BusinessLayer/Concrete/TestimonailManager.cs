@@ -6,7 +6,7 @@ namespace BusinessLayer.Concrete
 {
     public class TestimonailManager : ITestimonialService
     {
-        ITestimonialDal _testimonialDal;
+        private readonly ITestimonialDal _testimonialDal;
 
         public TestimonailManager(ITestimonialDal testimonialDal)
         {

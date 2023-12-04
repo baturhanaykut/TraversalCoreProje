@@ -6,7 +6,7 @@ namespace BusinessLayer.Concrete
 {
     public class ReservationManager : IReservationService
     {
-        IReservationDal _reservationDal;
+        private readonly IReservationDal _reservationDal;
 
         public ReservationManager(IReservationDal reservationDal)
         {
