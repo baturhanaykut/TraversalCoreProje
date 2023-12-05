@@ -12,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddFluentValidation();
 
+//API için istekleri karþýlamak için yazdýk.
+builder.Services.AddHttpClient();
 
 //Loglama Ýþlemei yapýldý.
 builder.Services.AddLogging(x =>
