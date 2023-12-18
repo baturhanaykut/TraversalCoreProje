@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using SignalRApi.DAL;
-using SignalRApi.Hubs;
-using SignalRApi.Model;
+using SignalRApiForSql.DAL;
+using SignalRApiForSql.Hubs;
+using SignalRApiForSql.Model;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<VisitorService>();
 
@@ -23,18 +26,10 @@ builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
         .AllowCredentials();
     }));
 
-
-builder.Services.AddEntityFrameworkNpgsql().AddDbContext<Context>(opt
-    => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddSignalR();
 
 
 var app = builder.Build();
-
-
-
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -44,6 +39,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
 app.UseCors("CorsPolicy");
 app.MapHub<VisitorHub>("/VisitorHub");
 
