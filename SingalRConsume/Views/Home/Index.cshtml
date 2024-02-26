@@ -4,27 +4,31 @@
 
 @section Scripts
 {
+
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     
+
     <script type="text/javascript">
         $(document).ready(() => {
-
-
+            console.log("1");
             var connection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5214/VisitorHub").build();
-
-            $("#connetionStatus").text(connection.connectionState);
-
-
+            console.log(connection.q)
+            $("#connectionStatus").text(connection.q);
+            console.log("3");
             connection.start().then(() => {
-                $("#connetionStatus").text(connection.connectionState);
+                console.log("startın içinde");
+                $("#connectionStatus").text(connection.q);
+                
             }).catch((err) => { console.log(err) });
+
         })
     </script>
+
 }
 
 <div class="container">
     <br />
     <div class="alert alert-warning">
-        Bağlantınızın Durumu : <b id="connetionStatus"></b>
+        Bağlantınızın Durumu:<b id="connectionStatus"></b>
     </div>
 </div>

@@ -6,6 +6,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using TraversalCoreProje.CQRS.Handlers.DestinationHandlers;
 using TraversalCoreProje.Models;
 
@@ -20,13 +21,13 @@ builder.Services.AddHttpClient();
 //Loglama Ýþlemei yapýldý.
 builder.Services.AddLogging(x =>
 {
-    x.ClearProviders();
-    x.SetMinimumLevel(LogLevel.Debug);
-    x.AddDebug();
+	x.ClearProviders();
+	x.SetMinimumLevel(LogLevel.Debug);
+	x.AddDebug();
 });
 
 builder.Services.AddDbContext<Context>();
-builder.Services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<Context>().AddErrorDescriber<CustomIdentityValidator>();
+builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<Context>().AddErrorDescriber<CustomIdentityValidator>();
 
 
 
@@ -44,15 +45,25 @@ builder.Services.AddScoped<UpdateDestinationCommandHandler>();
 //MediatR paketini çalýþtýrmak için yazdýk
 builder.Services.AddMediatR(typeof(Program));
 
+builder.Services.AddLocalization(opt =>
+{
+	opt.ResourcesPath = "Resources";
+});
 
 builder.Services.AddMvc(config =>
 {
-    var policy = new AuthorizationPolicyBuilder()
-    .RequireAuthenticatedUser()
-    .Build();
-    config.Filters.Add(new AuthorizeFilter(policy));
+	var policy = new AuthorizationPolicyBuilder()
+	.RequireAuthenticatedUser()
+	.Build();
+	config.Filters.Add(new AuthorizeFilter(policy));
 });
-builder.Services.AddMvc();
+
+builder.Services.AddMvc().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).AddDataAnnotationsLocalization();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.LoginPath = "/Login/SignIn/";
+});
 
 
 var app = builder.Build();
@@ -60,9 +71,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 //Loglama Ýþlemi yapýldý.
@@ -82,12 +93,16 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+var supportedCultures = new[] { "en", "fr", "es", "gr", "tr", "de" };
+var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[4]).AddSupportedCultures(supportedCultures).AddSupportedUICultures(supportedCultures);
+app.UseRequestLocalization(localizationOptions);
+
 app.MapControllerRoute(
       name: "areas",
       pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Destination}/{action=Index}/{id?}");
+	name: "default",
+	pattern: "{controller=Destination}/{action=Index}/{id?}");
 
 app.Run();
